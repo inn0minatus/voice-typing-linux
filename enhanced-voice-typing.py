@@ -204,15 +204,15 @@ def main():
     
     args = parser.parse_args()
     
-    # Check CUDA if requested
+    # Check CUDA if requested (use ctranslate2 for detection, not PyTorch)
     if args.device == 'cuda':
         try:
-            import torch
-            if not torch.cuda.is_available():
+            import ctranslate2
+            if ctranslate2.get_cuda_device_count() == 0:
                 print("CUDA not available, using CPU")
                 args.device = 'cpu'
-        except ImportError:
-            print("PyTorch not installed, using CPU")
+        except Exception as e:
+            print(f"CUDA detection failed ({e}), using CPU")
             args.device = 'cpu'
     
     # Run voice typing
